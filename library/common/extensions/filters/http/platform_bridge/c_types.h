@@ -171,6 +171,8 @@ typedef struct {
   envoy_filter_on_headers_f on_response_headers;
   envoy_filter_on_data_f on_response_data;
   envoy_filter_on_trailers_f on_response_trailers;
+  envoy_filter_on_cancel_f on_request_cancel;
+  envoy_filter_on_error_f on_response_error;
   envoy_filter_set_callbacks_f set_request_callbacks;
   envoy_filter_on_resume_f on_resume_request;
   envoy_filter_set_callbacks_f set_response_callbacks;

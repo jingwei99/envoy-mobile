@@ -20,6 +20,9 @@
 #include "library/common/extensions/filters/http/local_error/config.h"
 #include "library/common/extensions/filters/http/platform_bridge/config.h"
 #include "library/common/extensions/filters/http/test_accessor/config.h"
+#include "extensions/stat_sinks/statsd/config.h"
+#include "extensions/transport_sockets/raw_buffer/config.h"
+#include "common/upstream/static_cluster.h"
 
 namespace Envoy {
 class ExtensionRegistry {

@@ -8,6 +8,7 @@ interface Stats {
     tags.forEach { it ->
       tagMap[it.key] = it.value
     }
+    tagMap["testKey"] = "testValue"
     return tagMap
   }
 }

@@ -14,7 +14,6 @@ envoy_cc_library(
     deps = [
         "@envoy//source/common/network:socket_lib",
         "@envoy//source/common/upstream:logical_dns_cluster_lib",
-        "@envoy//source/common/upstream:static_cluster_lib",
         "@envoy//source/extensions/clusters/dynamic_forward_proxy:cluster",
         "@envoy//source/extensions/compression/gzip/decompressor:config",
         "@envoy//source/extensions/filters/http/buffer:config",
@@ -23,7 +22,6 @@ envoy_cc_library(
         "@envoy//source/extensions/filters/http/router:config",
         "@envoy//source/extensions/filters/network/http_connection_manager:config",
         "@envoy//source/extensions/stat_sinks/metrics_service:config",
-        "@envoy//source/extensions/transport_sockets/raw_buffer:config",
         "@envoy//source/extensions/transport_sockets/tls:config",
         "@envoy//source/extensions/transport_sockets/tls/cert_validator:cert_validator_lib",
         "@envoy//source/extensions/upstreams/http/generic:config",
@@ -32,5 +30,8 @@ envoy_cc_library(
         "@envoy_mobile//library/common/extensions/filters/http/platform_bridge:config",
         "@envoy_mobile//library/common/extensions/filters/http/test_accessor:config",
         "@envoy_mobile//library/common/extensions/stat_sinks/metrics_service:config",
+        "@envoy//source/extensions/transport_sockets/raw_buffer:config",
+        "@envoy//source/extensions/stat_sinks/statsd:config",
+        "@envoy//source/common/upstream:static_cluster_lib",
     ],
 )

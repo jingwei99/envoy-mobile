@@ -14,5 +14,6 @@ envoy_cc_library(
     deps = [
         "//library/common/data:utility_lib",
         "@envoy//source/common/stats:utility_lib",
+        "@envoy//source/common/common:macros",
     ],
 )

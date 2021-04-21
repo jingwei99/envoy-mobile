@@ -5,6 +5,8 @@
 
 #include "library/common/types/c_types.h"
 
+#include "common/common/logger.h"
+
 namespace Envoy {
 namespace Stats {
 namespace Utility {

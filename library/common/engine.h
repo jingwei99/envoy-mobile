@@ -9,11 +9,12 @@
 #include "library/common/common/lambda_logger_delegate.h"
 #include "library/common/envoy_mobile_main_common.h"
 #include "library/common/http/dispatcher.h"
+#include "common/common/logger.h"
 #include "library/common/types/c_types.h"
 
 namespace Envoy {
 
-class Engine {
+class Engine  : public Logger::Loggable<Logger::Id::http> {
 public:
   /**
    * Constructor for a new engine instance.

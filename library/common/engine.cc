@@ -63,7 +63,7 @@ envoy_status_t Engine::run(const std::string config, const std::string log_level
       std::cerr << e.what() << std::endl;
       return ENVOY_FAILURE;
     }
-
+    ENVOY_LOG(trace, " line={}", "L66");  
     // Note: We're waiting longer than we might otherwise to drain to the main thread's dispatcher.
     // This is because we're not simply waiting for its availability and for it to have started, but
     // also because we're waiting for clusters to have done their first attempt at DNS resolution.
@@ -72,12 +72,14 @@ envoy_status_t Engine::run(const std::string config, const std::string log_level
     // as we did previously).
     postinit_callback_handler_ = main_common_->server()->lifecycleNotifier().registerCallback(
         Envoy::Server::ServerLifecycleNotifier::Stage::PostInit, [this]() -> void {
+          ENVOY_LOG(trace, " line={}", "L75");  
           server_ = TS_UNCHECKED_READ(main_common_)->server();
           client_scope_ = server_->serverFactoryContext().scope().createScope("pulse.");
           // StatNameSet is lock-free, the benefit of using it is being able to create StatsName
           // on-the-fly without risking contention on system with lots of threads.
           // It also comes with ease of programming.
           stat_name_set_ = client_scope_->symbolTable().makeSet("pulse");
+          ENVOY_LOG(trace, "stat_name_set_={}", stat_name_set_);  
           auto api_listener = server_->listenerManager().apiListener()->get().http();
           ASSERT(api_listener.has_value());
           http_dispatcher_->ready(server_->dispatcher(), server_->serverFactoryContext().scope(),
@@ -131,24 +133,47 @@ Engine::~Engine() {
 
 envoy_status_t Engine::recordCounterInc(const std::string& elements, envoy_stats_tags tags,
                                         uint64_t count) {
-  if (server_ && client_scope_ && stat_name_set_) {
-    Stats::StatNameTagVector tags_vctr =
-        Stats::Utility::transformToStatNameTagVector(tags, stat_name_set_);
-    std::string name = Stats::Utility::sanitizeStatsName(elements);
-    server_->dispatcher().post([this, name, tags_vctr, count]() -> void {
-      Stats::Utility::counterFromElements(*client_scope_, {Stats::DynamicName(name)}, tags_vctr)
-          .add(count);
-    });
-    return ENVOY_SUCCESS;
+  ENVOY_LOG(trace, "recordCounterInc tags.len={}", tags.length);  
+  if (server_ != nullptr) {
+    ENVOY_LOG(trace, "recordCounterInc line={}", "L136");  
   }
-  return ENVOY_FAILURE;
+  
+  if (client_scope_ != nullptr) {
+    ENVOY_LOG(trace, "recordCounterInc line={}", "139");  
+  }  
+  
+  if (stat_name_set_ != nullptr) {
+    ENVOY_LOG(trace, "recordCounterInc L142");  
+  }
+  ENVOY_LOG(trace, "recordCounterInc line={}", "144");  
+  if (server_ && client_scope_) {
+    // ENVOY_LOG(trace, "recordCounterInc L145");  
+    // Stats::StatNameTagVector tags_vctr =
+    //     Stats::Utility::transformToStatNameTagVector(tags, stat_name_set_);
+    // ENVOY_LOG(trace, "recordCounterInc L147"); 
+        // server_->dispatcher().post([this, name, tags_vctr, count]() -> void {
+    //   Stats::Utility::counterFromElements(*client_scope_, {Stats::DynamicName(name)}, tags_vctr)
+    //       .add(count); 
+    
+    ENVOY_LOG(trace, "recordCounterInc line={}", "158");  
+    std::string name = Stats::Utility::sanitizeStatsName(elements);
+    server_->dispatcher().post([this, name, count]() -> void {
+      Stats::Utility::counterFromElements(*client_scope_, {Stats::DynamicName(name)}).add(count);
+    });
+    ENVOY_LOG(trace, "recordCounterInc line={}", "162");  
+    return ENVOY_SUCCESS;
+ }
+ ENVOY_LOG(trace, "recordCounterInc line={}", "166");  
+ return ENVOY_FAILURE;
 }
 
 envoy_status_t Engine::recordGaugeSet(const std::string& elements, envoy_stats_tags tags,
                                       uint64_t value) {
+  ENVOY_LOG(trace, "recordGaugeSet tags.len={}", tags.length);    
   if (server_ && client_scope_ && stat_name_set_) {
     Stats::StatNameTagVector tags_vctr =
         Stats::Utility::transformToStatNameTagVector(tags, stat_name_set_);
+    ENVOY_LOG(trace, "recordCounterInc L157"); 
     std::string name = Stats::Utility::sanitizeStatsName(elements);
     server_->dispatcher().post([this, name, tags_vctr, value]() -> void {
       Stats::Utility::gaugeFromElements(*client_scope_, {Stats::DynamicName(name)},
